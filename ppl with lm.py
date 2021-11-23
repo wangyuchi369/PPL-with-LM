@@ -3,24 +3,41 @@ from datasets import load_dataset
 import torch
 from tqdm import tqdm
 device = 'cuda'
-model_id = 'gpt2-large'
+model_id = 'gpt2'
 model = GPT2LMHeadModel.from_pretrained(model_id).to(device)
 tokenizer = GPT2TokenizerFast.from_pretrained(model_id)
-print(tokenizer("Hello world hello"))
-test = load_dataset('wikitext', 'wikitext-2-raw-v1', split='test')
-encodings = tokenizer('\n\n'.join(test['text']), return_tensors='pt')
-print(encodings)
+
+#%%
+encodings = tokenizer('hello with project he is remote refused', return_tensors='pt')
 max_length = model.config.n_positions
 stride = 512
 
+# nlls = []
+# for i in tqdm(range(0, encodings.input_ids.size(1), stride)):
+#     begin_loc = max(i + stride - max_length, 0)
+#     end_loc = min(i + stride, encodings.input_ids.size(1))
+#     trg_len = end_loc - i    # may be different from stride on last loop
+#     input_ids = encodings.input_ids[:,begin_loc:end_loc].to(device)
+#     target_ids = input_ids.clone()
+#     target_ids[:,:-trg_len] = -100
+#
+#     with torch.no_grad():
+#         outputs = model(input_ids, labels=target_ids)
+#         neg_log_likelihood = outputs[0] * trg_len
+#
+#     nlls.append(neg_log_likelihood)
+
 nlls = []
-for i in tqdm(range(0, encodings.input_ids.size(1), stride)):
-    begin_loc = max(i + stride - max_length, 0)
-    end_loc = min(i + stride, encodings.input_ids.size(1))
-    trg_len = end_loc - i    # may be different from stride on last loop
+for i in range(0, encodings.input_ids.size(1)):
+    begin_loc = 0
+    end_loc = i+2
+    trg_len = 1   # may be different from stride on last loop
     input_ids = encodings.input_ids[:,begin_loc:end_loc].to(device)
     target_ids = input_ids.clone()
-    target_ids[:,:-trg_len] = -100
+    if i==0:
+        target_ids[:,:] = input_ids[:,:]
+    else:
+        target_ids[:,:-trg_len] = -100
 
     with torch.no_grad():
         outputs = model(input_ids, labels=target_ids)
