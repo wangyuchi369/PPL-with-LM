@@ -1,28 +1,26 @@
-from transformers import OpenAIGPTLMHeadModel, OpenAIGPTTokenizerFast
-from transformers import GPT2LMHeadModel, GPT2TokenizerFast
-import json
+import math
 import torch
+from pytorch_pretrained_bert import OpenAIGPTTokenizer, OpenAIGPTModel, OpenAIGPTLMHeadModel
 from tqdm import tqdm
 import timeit
-import math
+import json
 #%%
-model_id = 'gpt2-large'
-model = GPT2LMHeadModel.from_pretrained(model_id).to('cuda')
-tokenizer = GPT2TokenizerFast.from_pretrained(model_id)
+# Load pre-trained model (weights)
+model = OpenAIGPTLMHeadModel.from_pretrained('openai-gpt').to('cuda')
+model.eval()
+# Load pre-trained model tokenizer (vocabulary)
+tokenizer = OpenAIGPTTokenizer.from_pretrained('openai-gpt')
+#%%
+def score(sentence):
+    tokenize_input = tokenizer.tokenize(sentence)
+    tensor_input = torch.tensor([tokenizer.convert_tokens_to_ids(tokenize_input)]).to('cuda')
+    loss=model(tensor_input, lm_labels=tensor_input)
+    return math.exp(loss)
+
 #%%
 def ppl(answer, statement):
     sentence = statement.replace('**blank**', answer)
-    #sentence = ' the answer of question ' + statement + 'is' + answer
-    encodings = tokenizer(sentence, return_tensors='pt')
-    print(encodings.input_ids.size(1))
-    print(encodings.input_ids)
-    input_ids = encodings.input_ids.to('cuda')
-    with torch.no_grad():
-        outputs = model(input_ids, labels=input_ids)
-        cross_entropy = outputs[0] * encodings.input_ids.size(1)
-    ppl = cross_entropy
-    return ppl
-#%%
+    return score(sentence)
 answer_file = 'a.json'
 statement_file = 'b.json'
 with open(answer_file,'r') as f:
@@ -43,11 +41,4 @@ with open('c.json','w') as f:
     json.dump(statement_struct, f, indent =2)
 end=timeit.default_timer()
 print('Running time: %s Seconds'%(end-start))
-
-#%%
-ppl('not','this is **blank** rice noodle soup')
-#%%
-ppl('his','this is **blank** rice noodle soup')
-
-
 
