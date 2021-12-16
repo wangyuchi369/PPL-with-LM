@@ -21,8 +21,8 @@ def score(sentence):
 def ppl(answer, statement):
     sentence = statement.replace('**blank**', answer)
     return score(sentence)
-answer_file = 'a.json'
-statement_file = 'b.json'
+answer_file = '../a.json'
+statement_file = '../b.json'
 with open(answer_file,'r') as f:
     answer_list = json.load(f).values()
 with open(statement_file, 'r') as f:
@@ -37,7 +37,7 @@ for question in tqdm(questions_list):
         res[each_answer] = ppl(each_answer,statement)
     sort = sorted(res.items(),key=lambda x:x[1])[0:100]
     question['answer'] = [answer[0] for answer in sort ]
-with open('c.json','w') as f:
+with open('c.json', 'w') as f:
     json.dump(statement_struct, f, indent =2)
 end=timeit.default_timer()
 print('Running time: %s Seconds'%(end-start))
