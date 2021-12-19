@@ -25,8 +25,8 @@ def ppl(answer_list, statement):
     ppl = cross_entropy
     return ppl
 #%%
-answer_file = '../a.json'
-statement_file = '../b.json'
+answer_file = '../anwers.json'
+statement_file = '../question_examples.json'
 with open(answer_file,'r') as f:
     answer_list = json.load(f).values()
 with open(statement_file, 'r') as f:

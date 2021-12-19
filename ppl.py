@@ -27,7 +27,7 @@ def ppl(answer, statement):
     ppl = cross_entropy
     return ppl
 #%%
-answer_file = 'a.json'
+answer_file = 'anwers.json'
 statement_file = 'candidates.json'
 with open(answer_file,'r') as f:
     answer_list = json.load(f).values()

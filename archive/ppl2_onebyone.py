@@ -37,8 +37,8 @@ def ppl(answer, statement):
     ppl = torch.exp(torch.stack(nlls).sum())
     return ppl
 #%%
-answer_file = '../a.json'
-statement_file = '../b.json'
+answer_file = '../anwers.json'
+statement_file = '../question_examples.json'
 with open(answer_file,'r') as f:
     answer_list = json.load(f).values()
 with open(statement_file, 'r') as f:

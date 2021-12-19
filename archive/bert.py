@@ -27,8 +27,8 @@ def score(sentence):
     return torch.exp(sentence_loss/len(tokenize_input))
 #%%
 print(score("the people in the background are doing noting"))
-answer_file = '../a.json'
-statement_file = '../b.json'
+answer_file = '../anwers.json'
+statement_file = '../question_examples.json'
 with open(answer_file,'r') as f:
     answer_list = json.load(f).values()
 with open(statement_file, 'r') as f:

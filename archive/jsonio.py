@@ -5,8 +5,8 @@ def ppl(answer,statement):
     # TODO 根据模型得出ppl
     return random.random()
 
-answer_file = '../a.json'
-statement_file = '../b.json'
+answer_file = '../anwers.json'
+statement_file = '../question_examples.json'
 with open(answer_file,'r') as f:
     answer_list = json.load(f).values()
 with open(statement_file, 'r') as f:

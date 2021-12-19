@@ -21,8 +21,8 @@ def score(sentence):
 def ppl(answer, statement):
     sentence = statement.replace('**blank**', answer)
     return score(sentence)
-answer_file = '../a.json'
-statement_file = '../b.json'
+answer_file = '../anwers.json'
+statement_file = '../question_examples.json'
 with open(answer_file,'r') as f:
     answer_list = json.load(f).values()
 with open(statement_file, 'r') as f:

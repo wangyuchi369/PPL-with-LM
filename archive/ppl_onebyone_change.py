@@ -43,7 +43,7 @@ def ppl(answer, statement):
     return ppl
 #%%
 answer_file = 'ashort.json'
-statement_file = '../b.json'
+statement_file = '../question_examples.json'
 with open(answer_file,'r') as f:
     answer_list = json.load(f).values()
 with open(statement_file, 'r') as f:
